@@ -1,0 +1,88 @@
+inputs:
+  - name: RS-data
+    metadata: data/metadata_tsv_2022_01_31.tar.xz
+    sequences: data/sequences_fasta_2022_01_31.tar.xz
+# Define locations for which builds should be created.
+# For each build we specify a subsampling scheme via an explicit key.
+builds:
+  # first we'll define a country-level build, focused on Switzerland.
+  # we'll define the sampling schemes below
+  brazil-rs:
+    region: South America
+    country: Brazil
+    division: Rio Grande do Sul
+    subsampling_scheme: focal-contextual
+    colors: "my_profiles/PhD/brazil_build_colors.tsv"
+    title: "SARS-CoV-2 Sequences in Rio Grande do Sul"
+
+  brazil-pe:
+    region: South America
+    country: Brazil
+    division: Pernambuco
+    subsampling_scheme: focal-contextual
+    colors: "my_profiles/PhD/brazil_build_colors.tsv"
+    title: "SARS-CoV-2 Sequences in Pernambuco"
+
+subsampling:
+  # Here we use the default subsampling logic for countries
+  brazil-rs:
+    # Focal samples for country
+    division:
+      group_by: "location year month"
+      max_sequences: 3000
+      exclude: "--exclude-where 'region!={region}' 'country!={country}' 'division!={division}' 'host!=Human'"
+    country:
+      group_by: "division year month"
+      max_sequences: 500
+      exclude: "--exclude-where 'country!={country}' 'division={division}' 'host!=Human'"
+      priorities:
+        type: "proximity"
+        focus: "division"
+    # Contextual samples from country's region
+    region:
+      group_by: "country year month"
+      max_sequences: 500
+      exclude: "--exclude-where 'country={country}' 'region!={region}' 'host!=Human'"
+      priorities:
+        type: "proximity"
+        focus: "country"
+    # Contextual samples from the rest of the world,
+    # excluding the current region to avoid resampling.
+    global:
+      group_by: "country year month"
+      max_sequences: 500
+      exclude: "--exclude-where 'region={region}' 'host!=Human'"
+      priorities:
+        type: "proximity"
+        focus: "country"
+
+  brazil-pe:
+      # Focal samples for country
+      division:
+        group_by: "location year month"
+        max_sequences: 3000
+        exclude: "--exclude-where 'region!={region}' 'country!={country}' 'division!={division}' 'host!=Human'"
+      country:
+        group_by: "division year month"
+        max_sequences: 500
+        exclude: "--exclude-where 'country!={country}' 'division={division}' 'host!=Human'"
+        priorities:
+          type: "proximity"
+          focus: "division"
+      # Contextual samples from country's region
+      region:
+        group_by: "country year month"
+        max_sequences: 500
+        exclude: "--exclude-where 'country={country}' 'region!={region}' 'host!=Human'"
+        priorities:
+          type: "proximity"
+          focus: "country"
+      # Contextual samples from the rest of the world,
+      # excluding the current region to avoid resampling.
+      global:
+        group_by: "country year month"
+        max_sequences: 500
+        exclude: "--exclude-where 'region={region}' 'host!=Human'"
+        priorities:
+          type: "proximity"
+          focus: "country"
