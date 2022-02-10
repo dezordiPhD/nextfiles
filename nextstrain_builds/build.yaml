@@ -11,7 +11,7 @@ builds:
     region: South America
     country: Brazil
     division: Rio Grande do Sul
-    subsampling_scheme: focal-contextual
+    subsampling_scheme: focal-contextual-rs
     colors: "my_profiles/PhD/brazil_build_colors.tsv"
     title: "SARS-CoV-2 Sequences in Rio Grande do Sul"
 
@@ -19,20 +19,22 @@ builds:
     region: South America
     country: Brazil
     division: Pernambuco
-    subsampling_scheme: focal-contextual
+    subsampling_scheme: focal-contextual-pe
     colors: "my_profiles/PhD/brazil_build_colors.tsv"
     title: "SARS-CoV-2 Sequences in Pernambuco"
 
 subsampling:
   # Here we use the default subsampling logic for countries
-  brazil-rs:
+  focal-contextual-rs:
     # Focal samples for country
     division:
       group_by: "location year month"
+      max_date: "--max-date 2021-12-1"
       max_sequences: 3000
       exclude: "--exclude-where 'region!={region}' 'country!={country}' 'division!={division}' 'host!=Human'"
     country:
       group_by: "division year month"
+      max_date: "--max-date 2021-12-1"
       max_sequences: 500
       exclude: "--exclude-where 'country!={country}' 'division={division}' 'host!=Human'"
       priorities:
@@ -41,6 +43,7 @@ subsampling:
     # Contextual samples from country's region
     region:
       group_by: "country year month"
+      max_date: "--max-date 2021-12-1"
       max_sequences: 500
       exclude: "--exclude-where 'country={country}' 'region!={region}' 'host!=Human'"
       priorities:
@@ -50,20 +53,23 @@ subsampling:
     # excluding the current region to avoid resampling.
     global:
       group_by: "country year month"
+      max_date: "--max-date 2021-12-1"
       max_sequences: 500
       exclude: "--exclude-where 'region={region}' 'host!=Human'"
       priorities:
         type: "proximity"
         focus: "country"
 
-  brazil-pe:
+  focal-contextual-pe:
       # Focal samples for country
       division:
         group_by: "location year month"
+        max_date: "--max-date 2021-12-1"
         max_sequences: 3000
         exclude: "--exclude-where 'region!={region}' 'country!={country}' 'division!={division}' 'host!=Human'"
       country:
         group_by: "division year month"
+        max_date: "--max-date 2021-12-1"
         max_sequences: 500
         exclude: "--exclude-where 'country!={country}' 'division={division}' 'host!=Human'"
         priorities:
@@ -72,6 +78,7 @@ subsampling:
       # Contextual samples from country's region
       region:
         group_by: "country year month"
+        max_date: "--max-date 2021-12-1"
         max_sequences: 500
         exclude: "--exclude-where 'country={country}' 'region!={region}' 'host!=Human'"
         priorities:
@@ -81,6 +88,7 @@ subsampling:
       # excluding the current region to avoid resampling.
       global:
         group_by: "country year month"
+        max_date: "--max-date 2021-12-1"
         max_sequences: 500
         exclude: "--exclude-where 'region={region}' 'host!=Human'"
         priorities:
